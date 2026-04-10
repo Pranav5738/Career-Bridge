@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Career Bridge logo favicon">
+  <defs>
+    <linearGradient id="cb-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="52" fill="#f8fafc"/>
+  <rect x="16" y="16" width="224" height="224" rx="44" fill="url(#cb-bg)"/>
+  <path d="M82 70h34L80 122l30 64H76l-26-55 32-61z" fill="#ffffff"/>
+  <path d="M140 70h40c18 0 34 15 34 33 0 11-7 22-17 28 11 6 19 18 19 31 0 20-16 36-37 36h-39V70zm31 49c6 0 11-5 11-11s-5-11-11-11h-7v22h7zm4 52c7 0 13-6 13-13s-6-13-13-13h-11v26h11z" fill="#082f49"/>
+</svg>

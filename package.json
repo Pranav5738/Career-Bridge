@@ -1,0 +1,15 @@
+{
+  "name": "career-bridge",
+  "version": "1.0.0",
+  "description": "Career-Bridge: AI-powered mentorship and career acceleration platform",
+  "private": true,
+  "scripts": {
+    "dev": "cd FRONTEND && npm run dev",
+    "build": "cd FRONTEND && npm run build",
+    "preview": "cd FRONTEND && npm run preview",
+    "lint": "cd FRONTEND && npm run lint"
+  },
+  "keywords": ["mentorship", "career", "platform", "react", "vite"],
+  "author": "",
+  "license": "ISC"
+}

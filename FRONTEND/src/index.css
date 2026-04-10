@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		color: #0f172a;
+		background-color: #f8fafc;
+	}
+
+	body {
+		margin: 0;
+		min-height: 100vh;
+		background:
+			radial-gradient(circle at top right, #dbeafe 0%, transparent 42%),
+			radial-gradient(circle at top left, #cffafe 0%, transparent 38%),
+			#f8fafc;
+		color: #0f172a;
+	}
+
+	#root {
+		min-height: 100vh;
+	}
+}
+
+@layer components {
+	.dc-light [class*="bg-gray-950"],
+	.dc-light [class*="bg-gray-900"],
+	.dc-light [class*="bg-gray-800"] {
+		background-color: #ffffff !important;
+	}
+
+	.dc-light [class*="bg-gray-900/"] {
+		background-color: #f8fafc !important;
+	}
+
+	.dc-light [class*="border-gray-800"],
+	.dc-light [class*="border-gray-700"] {
+		border-color: #e2e8f0 !important;
+	}
+
+	.dc-light [class*="text-white"] {
+		color: #0f172a !important;
+	}
+
+	.dc-light [class*="text-gray-500"],
+	.dc-light [class*="text-gray-400"] {
+		color: #64748b !important;
+	}
+
+	.dc-light [class*="text-gray-300"],
+	.dc-light [class*="text-gray-200"] {
+		color: #334155 !important;
+	}
+
+	.dc-light input,
+	.dc-light textarea,
+	.dc-light select {
+		background-color: #ffffff !important;
+		border-color: #cbd5e1 !important;
+		color: #0f172a !important;
+	}
+
+	.dc-light input::placeholder,
+	.dc-light textarea::placeholder {
+		color: #94a3b8 !important;
+	}
+}
