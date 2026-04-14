@@ -9,7 +9,16 @@
     "preview": "cd FRONTEND && npm run preview",
     "lint": "cd FRONTEND && npm run lint"
   },
-  "keywords": ["mentorship", "career", "platform", "react", "vite"],
+  "keywords": [
+    "mentorship",
+    "career",
+    "platform",
+    "react",
+    "vite"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "^4.8.3"
+  }
 }
