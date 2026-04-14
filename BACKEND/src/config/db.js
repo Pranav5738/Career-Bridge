@@ -25,6 +25,12 @@ const normalizeMongoUri = (uri) => {
 
 export const connectDB = async () => {
     try {
+        if (!env.mongoUri) {
+            throw new Error(
+                "Missing MongoDB URI. Set MONGODB_URI (preferred) or MONGO_URI in Render environment variables."
+            );
+        }
+
         await mongoose.connect(normalizeMongoUri(env.mongoUri));
 
         console.log("✅ MongoDB connected");

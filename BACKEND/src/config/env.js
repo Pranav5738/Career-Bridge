@@ -4,7 +4,7 @@ dotenv.config({ quiet: true });
 
 export const env = {
     port: process.env.PORT || 5000,
-    mongoUri: process.env.MONGODB_URI,
+    mongoUri: (process.env.MONGODB_URI || process.env.MONGO_URI || "").trim(),
     jwtSecret: process.env.JWT_SECRET,
     jwtExpires: process.env.JWT_EXPIRES_IN,
     corsOrigin: process.env.CORS_ORIGIN,
