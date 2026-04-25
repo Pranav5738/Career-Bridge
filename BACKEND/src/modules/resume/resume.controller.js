@@ -1,5 +1,6 @@
 import ResumeAnalysis from "./resumeAnalysis.model.js";
 import { analyzeResumeService } from "./resume.service.js";
+import { PDFParse } from "pdf-parse";
 
 export const analyzeResume = async (req, res) => {
     try {
@@ -7,8 +8,9 @@ export const analyzeResume = async (req, res) => {
 
         // 📄 If PDF uploaded
         if (req.file) {
-            const pdfParse = (await import("pdf-parse")).default;
-            const data = await pdfParse(req.file.buffer);
+            const parser = new PDFParse({ data: req.file.buffer });
+            const data = await parser.getText();
+            await parser.destroy();
             resumeText = data?.text || "";
         }
 
