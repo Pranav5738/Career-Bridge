@@ -41,6 +41,7 @@ app.use(
                 "http://localhost:5174",
                 "http://127.0.0.1:5173",
                 "http://127.0.0.1:5174",
+                "https://career-bridge-8tmp.vercel.app"
             ]);
 
             const isLocalhostDev = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);

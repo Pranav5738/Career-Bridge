@@ -1,5 +1,4 @@
 # Career-Bridge
-<<<<<<< HEAD
 
 Career-Bridge is an AI-assisted mentorship and career acceleration platform with a React frontend and an Express/MongoDB backend. Core flows now persist to the database for authentication, profile updates, forum posts, and marketplace mentor actions.
 
@@ -57,6 +56,3 @@ The current workspace passes the frontend build, frontend lint, and backend test
 - `FRONTEND/.env.local` defaults `VITE_API_URL` to `http://localhost:5000`.
 - The backend exposes the API under `/api/*` and requires a running MongoDB instance.
 
-=======
-Carrier Bridge is a full-stack SaaS platform that connects students and mentors through AI-powered tools and real-time collaboration. It offers resume analysis, skill gap insights, mock interviews, DSA practice, mentor booking, webinars, and live sessions, creating a complete ecosystem for structured career growth and interview preparation.
->>>>>>> 315bb0b22600c6315790972efb53eff9588e713f
