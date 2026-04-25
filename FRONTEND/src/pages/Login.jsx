@@ -72,7 +72,7 @@ const Login = () => {
                     </div>
                 </Card>
 
-                <Card className="p-7 md:p-8 border-slate-200 shadow-xl shadow-slate-200/60">
+                <Card className="p-7 md:p-8 bg-white border-slate-200 shadow-xl shadow-slate-200/60">
                     <div className="flex items-center gap-3">
                         <div className="inline-flex w-10 h-10 rounded-xl bg-gradient-to-br from-sky-600 to-cyan-600 items-center justify-center text-white">
                             <Icon name="lock" size={16} />
