@@ -8,6 +8,11 @@
 		background-color: #f8fafc;
 	}
 
+	:root.theme-dark {
+		color: #e2e8f0;
+		background-color: #020617;
+	}
+
 	body {
 		margin: 0;
 		min-height: 100vh;
@@ -18,12 +23,25 @@
 		color: #0f172a;
 	}
 
+	:root.theme-dark body {
+		background:
+			radial-gradient(circle at top right, #0f172a 0%, transparent 42%),
+			radial-gradient(circle at top left, #111827 0%, transparent 38%),
+			#020617;
+		color: #e2e8f0;
+	}
+
 	#root {
 		min-height: 100vh;
 	}
 }
 
 @layer components {
+	.dc-light {
+		background-color: #f8fafc !important;
+		color: #0f172a !important;
+	}
+
 	.dc-light [class*="bg-gray-950"],
 	.dc-light [class*="bg-gray-900"],
 	.dc-light [class*="bg-gray-800"] {
@@ -63,6 +81,67 @@
 
 	.dc-light input::placeholder,
 	.dc-light textarea::placeholder {
+		color: #94a3b8 !important;
+	}
+
+	.dc-dark {
+		background-color: #020617 !important;
+		color: #e2e8f0 !important;
+	}
+
+	.dc-dark [class*="bg-white"],
+	.dc-dark [class*="bg-slate-50"] {
+		background-color: #0f172a !important;
+	}
+
+	.dc-dark [class*="bg-slate-100"] {
+		background-color: #111827 !important;
+	}
+
+	.dc-dark [class*="bg-slate-200"] {
+		background-color: #1e293b !important;
+	}
+
+	.dc-dark [class*="border-slate-100"],
+	.dc-dark [class*="border-slate-200"],
+	.dc-dark [class*="border-slate-300"] {
+		border-color: #334155 !important;
+	}
+
+	.dc-dark [class*="text-slate-900"],
+	.dc-dark [class*="text-slate-800"],
+	.dc-dark [class*="text-slate-700"] {
+		color: #f8fafc !important;
+	}
+
+	.dc-dark [class*="text-slate-600"],
+	.dc-dark [class*="text-slate-500"] {
+		color: #cbd5e1 !important;
+	}
+
+	.dc-dark [class*="text-slate-400"] {
+		color: #94a3b8 !important;
+	}
+
+	.dc-dark [class*="hover:bg-slate-100"]:hover,
+	.dc-dark [class*="hover:bg-slate-50"]:hover {
+		background-color: #1e293b !important;
+	}
+
+	.dc-dark [class*="hover:bg-rose-50"]:hover {
+		background-color: rgba(225, 29, 72, 0.15) !important;
+	}
+
+	.dc-dark input,
+	.dc-dark textarea,
+	.dc-dark select {
+		background-color: #0b1220 !important;
+		border-color: #334155 !important;
+		color: #f8fafc !important;
+	}
+
+	.dc-dark input::placeholder,
+	.dc-dark textarea::placeholder {
 		color: #94a3b8 !important;
 	}
 }

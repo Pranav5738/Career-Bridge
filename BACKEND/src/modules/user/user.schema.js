@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const updateProfileSchema = z.object({
+    name: z.string().trim().optional(),
     status: z.string().trim().optional(),
     targetRole: z.string().trim().optional(),
     expertise: z.string().trim().optional(),

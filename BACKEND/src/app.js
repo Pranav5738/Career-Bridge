@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import path from "path";
 import authRoutes from "./modules/auth/auth.routes.js";
 import { env } from "./config/env.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
@@ -26,6 +27,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(helmet());
 
 app.use(express.json());
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use(
     cors({
@@ -71,6 +73,8 @@ app.use("/api/ai", aiRoutes);
 
 app.use("/api/payment", paymentRoutes);
 
+app.use("/api/marketplace", marketplaceRoutes); // Use marketplace routes
+
 app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
@@ -78,8 +82,6 @@ app.get("/", (req, res) => {
         message: "Carrier Bridge API running"
     });
 });
-
-app.use("/api/marketplace", marketplaceRoutes); // Use marketplace routes
 
 app.use(errorHandler);
 

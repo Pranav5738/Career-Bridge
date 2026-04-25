@@ -8,7 +8,7 @@ import Card from "../devconnect/ui/Card";
 import Icon from "../devconnect/ui/Icon";
 import { ProgressBar } from "../devconnect/ui/Progress";
 import Modal from "../devconnect/ui/Modal";
-import { apiRequest } from "../utils/api";
+import { apiRequest, resolveApiUrl } from "../utils/api";
 
 const normalizeProfile = (source) => {
     const raw = source || {};
@@ -23,6 +23,7 @@ const normalizeProfile = (source) => {
         github: raw?.github || "",
         location: raw?.location || "",
         membershipPlan: raw?.membershipPlan || "",
+        avatarUrl: raw?.avatarUrl || "",
         skills: Array.isArray(raw?.skills)
             ? raw.skills
             : typeof raw?.skills === "string"
@@ -58,6 +59,17 @@ const Profile = () => {
     const [saving, setSaving] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [form, setForm] = useState(() => toFormState(user));
+    const [avatarPreview, setAvatarPreview] = useState("");
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [avatarSaving, setAvatarSaving] = useState(false);
+
+    useEffect(() => {
+        return () => {
+            if (avatarPreview?.startsWith("blob:")) {
+                URL.revokeObjectURL(avatarPreview);
+            }
+        };
+    }, [avatarPreview]);
 
     useEffect(() => {
         let isMounted = true;
@@ -92,11 +104,15 @@ const Profile = () => {
         return () => {
             isMounted = false;
         };
-    }, [addToast, updateUser, user]);
+    }, [user?.id]);
 
     const activeProfile = normalizeProfile(profile || user || {});
 
     const displayName = useMemo(() => {
+        if (activeProfile?.name?.trim()) {
+            return activeProfile.name.trim();
+        }
+
         if (!activeProfile?.email) return "User";
         const namePart = activeProfile.email.split("@")[0] || "User";
         return namePart
@@ -104,7 +120,7 @@ const Profile = () => {
             .filter(Boolean)
             .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
             .join(" ");
-    }, [activeProfile?.email]);
+    }, [activeProfile?.email, activeProfile?.name]);
 
     const initials = useMemo(() => {
         const parts = displayName.split(" ").filter(Boolean);
@@ -114,9 +130,12 @@ const Profile = () => {
     }, [displayName]);
 
     const roleLabel = activeProfile?.role === "mentor" ? "Mentor" : "Student";
+    const profileAvatarSrc = activeProfile?.avatarUrl ? resolveApiUrl(activeProfile.avatarUrl) : "";
 
     const openEditor = () => {
         setForm(toFormState(activeProfile));
+        setAvatarPreview(activeProfile?.avatarUrl ? resolveApiUrl(activeProfile.avatarUrl) : "");
+        setAvatarFile(null);
         setIsEditing(true);
     };
 
@@ -127,6 +146,7 @@ const Profile = () => {
             const response = await apiRequest("/api/user/profile", {
                 method: "PATCH",
                 body: {
+                    name: form.name,
                     status: form.status,
                     targetRole: form.targetRole,
                     expertise: form.expertise,
@@ -150,6 +170,55 @@ const Profile = () => {
             addToast(error.message || "Unable to save profile", "error");
         } finally {
             setSaving(false);
+        }
+    };
+
+    const onAvatarSelected = (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            addToast("Please select a valid image file", "error");
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            addToast("Image must be 5MB or smaller", "error");
+            return;
+        }
+
+        setAvatarFile(file);
+        const previewUrl = URL.createObjectURL(file);
+        setAvatarPreview(previewUrl);
+    };
+
+    const uploadAvatar = async () => {
+        if (!avatarFile) {
+            addToast("Select an image first", "warning");
+            return;
+        }
+
+        setAvatarSaving(true);
+
+        try {
+            const data = new FormData();
+            data.append("avatar", avatarFile);
+
+            const response = await apiRequest("/api/user/profile/avatar", {
+                method: "PATCH",
+                body: data,
+            });
+
+            const nextProfile = normalizeProfile(response?.user || profile || user);
+            setProfile(nextProfile);
+            updateUser(nextProfile);
+            setAvatarFile(null);
+            setAvatarPreview(nextProfile?.avatarUrl ? resolveApiUrl(nextProfile.avatarUrl) : "");
+            addToast("Profile picture updated", "success");
+        } catch (error) {
+            addToast(error.message || "Unable to upload profile picture", "error");
+        } finally {
+            setAvatarSaving(false);
         }
     };
 
@@ -186,9 +255,17 @@ const Profile = () => {
                 <Card className="p-6 xl:col-span-2">
                     <div className="flex items-start justify-between gap-4">
                         <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-lg font-black text-white">
-                                {initials}
-                            </div>
+                            {profileAvatarSrc ? (
+                                <img
+                                    src={profileAvatarSrc}
+                                    alt="Profile"
+                                    className="w-14 h-14 rounded-2xl object-cover border border-gray-800/70"
+                                />
+                            ) : (
+                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-lg font-black text-white">
+                                    {initials}
+                                </div>
+                            )}
                             <div>
                                 <div className="text-xl font-black text-white">{displayName}</div>
                                 <div className="text-sm text-gray-500">{activeProfile?.email ?? ""}</div>
@@ -276,13 +353,46 @@ const Profile = () => {
             </div>
 
             <Modal isOpen={isEditing} onClose={() => setIsEditing(false)} title="Edit Profile" size="lg">
+                <div className="mb-5 p-4 rounded-2xl border border-gray-800/70 bg-gray-900/30">
+                    <div className="flex items-center gap-4 flex-wrap">
+                        {avatarPreview || profileAvatarSrc ? (
+                            <img
+                                src={avatarPreview || profileAvatarSrc}
+                                alt="Profile preview"
+                                className="w-16 h-16 rounded-2xl object-cover border border-gray-700/70"
+                            />
+                        ) : (
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-xl font-black text-white">
+                                {initials}
+                            </div>
+                        )}
+
+                        <div className="flex-1 min-w-[220px]">
+                            <div className="text-xs font-semibold text-gray-400 mb-2">Profile Picture</div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <label className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-700 bg-gray-900/70 text-sm text-white cursor-pointer hover:border-violet-500/60 transition-colors">
+                                    <Icon name="upload" size={14} /> Choose Image
+                                    <input type="file" accept="image/*" className="hidden" onChange={onAvatarSelected} />
+                                </label>
+                                <Button
+                                    size="sm"
+                                    onClick={uploadAvatar}
+                                    disabled={!avatarFile || avatarSaving}
+                                >
+                                    {avatarSaving ? "Uploading..." : "Upload"}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="grid md:grid-cols-2 gap-4">
                     <label className="space-y-1">
                         <span className="text-xs font-semibold text-gray-400">Name</span>
                         <input
                             value={form.name}
-                            readOnly
-                            className="w-full bg-gray-900/40 border border-gray-800 rounded-xl px-3 py-2.5 text-sm text-gray-300"
+                            onChange={(e) => setForm((current) => ({ ...current, name: e.target.value }))}
+                            className="w-full bg-gray-900/70 border border-gray-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/60"
                         />
                     </label>
 

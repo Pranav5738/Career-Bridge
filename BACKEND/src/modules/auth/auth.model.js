@@ -38,6 +38,9 @@ const userSchema = new mongoose.Schema(
     membershipPlan: {
       type: String
     },
+    avatarUrl: {
+      type: String
+    },
     skills: {
       type: [String],
       default: []

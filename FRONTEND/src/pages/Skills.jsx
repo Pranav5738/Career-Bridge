@@ -100,12 +100,14 @@ const proficiencyLabel = (score) => {
 };
 
 const weeklyPlanForSubject = (subjectName, difficulty) => {
-                const [correctAnswers, setCorrectAnswers] = useState(() => readAssessmentSnapshot(profileKey).correctAnswers);
+    if (difficulty === "Beginner") {
         return `Build fundamentals in ${subjectName}, solve 25 practice problems, then take one mini mock.`;
     }
-                const [assessmentSubmittedAt, setAssessmentSubmittedAt] = useState(() => readAssessmentSnapshot(profileKey).submittedAt);
+
+    if (difficulty === "Intermediate") {
         return `Strengthen weak concepts in ${subjectName}, solve 40 mixed problems, and review mistakes weekly.`;
     }
+
     return `Focus on advanced ${subjectName} patterns, solve 20 hard problems, and complete one timed mock.`;
 };
 

@@ -58,4 +58,11 @@ export const apiRequest = async (path, options = {}) => {
     return payload;
 };
 
+export const resolveApiUrl = (resourcePath = "") => {
+    if (!resourcePath) return "";
+    if (/^https?:\/\//i.test(resourcePath)) return resourcePath;
+    const normalized = resourcePath.startsWith("/") ? resourcePath : `/${resourcePath}`;
+    return `${API_BASE_URL}${normalized}`;
+};
+
 export { API_BASE_URL };

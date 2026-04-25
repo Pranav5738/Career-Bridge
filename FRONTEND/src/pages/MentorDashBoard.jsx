@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Badge from "../devconnect/ui/Badge";
 import Button from "../devconnect/ui/Button";
 import Card from "../devconnect/ui/Card";
-import Icon from "../devconnect/ui/Icon";
 import { apiRequest } from "../utils/api";
 import MentorStatsCard from "./mentor/components/MentorStatsCard";
 import ActivityFeed from "./mentor/components/ActivityFeed";
@@ -24,6 +23,7 @@ const MentorDashboard = () => {
                     apiRequest("/api/dashboard/mentor"),
                     apiRequest("/api/webinars", { auth: false }).catch(() => ({ webinars: [] })),
                 ]);
+
                 if (active) {
                     setDashboard(response?.dashboard ?? null);
                     setWebinars(Array.isArray(webinarResponse?.webinars) ? webinarResponse.webinars : []);
@@ -67,34 +67,19 @@ const MentorDashboard = () => {
           ];
 
     const upcomingSessions = webinars
-        .filter((w) => w?.dateTime && new Date(w.dateTime).getTime() > Date.now())
+        .filter((item) => item?.dateTime && new Date(item.dateTime).getTime() > Date.now())
         .slice(0, 4)
-        .map((w, index) => ({
-            id: w._id || w.id || index,
+        .map((item, index) => ({
+            id: item._id || item.id || index,
             student: `Student ${index + 1}`,
-            time: new Date(w.dateTime).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }),
-            title: w.title || "Webinar session",
+            time: new Date(item.dateTime).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }),
+            title: item.title || "Webinar session",
         }));
 
     const activityItems = [
-        {
-            id: "booking",
-            icon: "users",
-            title: "New booking received",
-            time: "5m ago",
-        },
-        {
-            id: "webinar",
-            icon: "calendar",
-            title: "Webinar starting soon",
-            time: "24m ago",
-        },
-        {
-            id: "earning",
-            icon: "dollarSign",
-            title: "Payout processed",
-            time: "1h ago",
-        },
+        { id: "booking", icon: "users", title: "New booking received", time: "5m ago" },
+        { id: "webinar", icon: "calendar", title: "Webinar starting soon", time: "24m ago" },
+        { id: "earning", icon: "dollarSign", title: "Payout processed", time: "1h ago" },
     ];
 
     const stats = [
@@ -115,7 +100,8 @@ const MentorDashboard = () => {
                 </div>
                 <div className="flex gap-3">
                     <Button onClick={() => navigate("/webinars")}>
-                        Go Live <span className="text-rose-500">🔴</span>
+                        Go Live
+                        <span className="inline-flex h-2 w-2 rounded-full bg-rose-500 ml-2" aria-hidden="true" />
                     </Button>
                     <Button variant="secondary" onClick={() => navigate("/marketplace")}>
                         View Marketplace
@@ -125,8 +111,8 @@ const MentorDashboard = () => {
             </div>
 
             <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
-                {stats.map((s) => (
-                    <MentorStatsCard key={s.label} label={s.label} value={s.value} icon={s.icon} />
+                {stats.map((item) => (
+                    <MentorStatsCard key={item.label} label={item.label} value={item.value} icon={item.icon} />
                 ))}
             </div>
 
@@ -173,16 +159,18 @@ const MentorDashboard = () => {
                 <Card className="p-5">
                     <div className="font-bold text-white">Upcoming Sessions</div>
                     <div className="mt-4 space-y-3">
-                        {upcomingSessions.length ? upcomingSessions.map((session) => (
-                            <div key={session.id} className="rounded-xl border border-gray-800/70 bg-gray-900/20 p-3">
-                                <div className="text-sm font-semibold text-white">{session.student}</div>
-                                <div className="text-xs text-gray-500 mt-1">{session.title}</div>
-                                <div className="text-xs text-gray-500 mt-1">{session.time}</div>
-                                <Button size="sm" className="mt-3" onClick={() => navigate("/webinars")}>
-                                    Join
-                                </Button>
-                            </div>
-                        )) : (
+                        {upcomingSessions.length ? (
+                            upcomingSessions.map((session) => (
+                                <div key={session.id} className="rounded-xl border border-gray-800/70 bg-gray-900/20 p-3">
+                                    <div className="text-sm font-semibold text-white">{session.student}</div>
+                                    <div className="text-xs text-gray-500 mt-1">{session.title}</div>
+                                    <div className="text-xs text-gray-500 mt-1">{session.time}</div>
+                                    <Button size="sm" className="mt-3" onClick={() => navigate("/webinars")}>
+                                        Join
+                                    </Button>
+                                </div>
+                            ))
+                        ) : (
                             <div className="text-sm text-gray-500">No upcoming sessions scheduled.</div>
                         )}
                     </div>
@@ -234,6 +222,8 @@ const MentorDashboard = () => {
                     </div>
                 </Card>
             </div>
+
+            {loading ? <div className="sr-only">Loading mentor dashboard...</div> : null}
         </div>
     );
 };

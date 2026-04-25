@@ -1,14 +1,22 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "../../context/ThemeContext";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
 const AppLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
+    const { isDark } = useTheme();
     const left = collapsed ? "ml-16" : "ml-60";
 
     return (
-        <div className="dc-light min-h-screen bg-slate-50 text-slate-900">
+        <div
+            className={`min-h-screen ${
+                isDark
+                    ? "dc-dark bg-slate-950 text-slate-100"
+                    : "dc-light bg-slate-50 text-slate-900"
+            }`}
+        >
             <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
             <Topbar sidebarCollapsed={collapsed} />
             <main className={`${left} pt-16 transition-all duration-300`}>

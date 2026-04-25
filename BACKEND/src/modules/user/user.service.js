@@ -31,3 +31,14 @@ export const updateProfileService = async (userId, data) => {
 
     return user;
 };
+
+export const updateUserAvatarService = async (userId, avatarUrl) => {
+    const user = await User.findById(userId);
+
+    if (!user) throw new AppError("User not found", 404);
+
+    user.avatarUrl = avatarUrl;
+    await user.save();
+
+    return user;
+};

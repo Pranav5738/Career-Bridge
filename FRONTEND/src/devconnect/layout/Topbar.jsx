@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { apiRequest } from "../../utils/api";
+import { useTheme } from "../../context/ThemeContext";
+import { apiRequest, resolveApiUrl } from "../../utils/api";
 import Badge from "../ui/Badge";
 import ProgressCircle from "../ui/ProgressCircle";
 import Icon from "../ui/Icon";
@@ -11,6 +12,7 @@ import NotificationDropdown from "./topbar/NotificationDropdown";
 const Topbar = ({ sidebarCollapsed }) => {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
+    const { isDark, toggleTheme } = useTheme();
     const [profileOpen, setProfileOpen] = useState(false);
     const [notifOpen, setNotifOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -22,6 +24,7 @@ const Topbar = ({ sidebarCollapsed }) => {
     const left = sidebarCollapsed ? "ml-16" : "ml-60";
 
     const displayName = (() => {
+        if (user?.name?.trim()) return user.name.trim();
         if (!user?.email) return "Jordan";
         const namePart = user.email.split("@")[0] || "Jordan";
         const words = namePart
@@ -31,6 +34,8 @@ const Topbar = ({ sidebarCollapsed }) => {
             .map((p) => p.charAt(0).toUpperCase() + p.slice(1));
         return words.join(" ") || "Jordan";
     })();
+
+    const avatarSrc = user?.avatarUrl ? resolveApiUrl(user.avatarUrl) : "";
 
     const initials = (() => {
         const parts = displayName.split(" ").filter(Boolean);
@@ -226,6 +231,16 @@ const Topbar = ({ sidebarCollapsed }) => {
             <div className="flex items-center gap-2">
                 <ProgressCircle value={careerScore} label="Career Readiness" />
 
+                <button
+                    type="button"
+                    onClick={toggleTheme}
+                    className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all"
+                    aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                    title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                >
+                    <Icon name={isDark ? "sun" : "moon"} size={17} />
+                </button>
+
                 <div className="relative">
                     <button
                         type="button"
@@ -258,9 +273,17 @@ const Topbar = ({ sidebarCollapsed }) => {
                         }}
                         className="flex items-center gap-2.5 pl-3 pr-2 py-1.5 rounded-xl hover:bg-slate-100 transition-all"
                     >
-                        <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-500 to-cyan-500 flex items-center justify-center text-xs font-bold text-white">
-                            {initials}
-                        </div>
+                        {avatarSrc ? (
+                            <img
+                                src={avatarSrc}
+                                alt="Profile"
+                                className="w-7 h-7 rounded-lg object-cover border border-slate-300/60"
+                            />
+                        ) : (
+                            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-500 to-cyan-500 flex items-center justify-center text-xs font-bold text-white">
+                                {initials}
+                            </div>
+                        )}
                         <span className="text-sm font-medium text-slate-700">{displayName.split(" ")[0]}</span>
                         <Icon name="chevronDown" size={14} className="text-slate-500" />
                     </button>

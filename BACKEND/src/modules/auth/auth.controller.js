@@ -13,6 +13,7 @@ const toPublicUser = (user) => ({
     github: user?.github,
     location: user?.location,
     membershipPlan: user?.membershipPlan,
+    avatarUrl: user?.avatarUrl,
     skills: Array.isArray(user?.skills) ? user.skills : []
 });
 
