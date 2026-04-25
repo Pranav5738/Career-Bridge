@@ -11,6 +11,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Marketplace from "./pages/Marketplace";
 import Resume from "./pages/Resume";
 import Skills from "./pages/Skills";
+import SkillAssessment from "./pages/SkillAssessment";
 import Interview from "./pages/Interview";
 import Webinars from "./pages/Webinars";
 import CreateWebinar from "./pages/CreateWebinar";
@@ -100,6 +101,7 @@ function App() {
         <Route path="/marketplace" element={appShell(<Marketplace />)} />
         <Route path="/resume" element={appShell(<Resume />)} />
         <Route path="/skills" element={appShell(<Skills />)} />
+        <Route path="/skills/assessment" element={appShell(<SkillAssessment />)} />
         <Route path="/interview" element={appShell(<Interview />)} />
         <Route path="/webinars" element={appShell(<Webinars />)} />
         <Route
