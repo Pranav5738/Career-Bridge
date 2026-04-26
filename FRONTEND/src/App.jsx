@@ -115,6 +115,7 @@ function App() {
           }
         />
         <Route path="/forum" element={appShell(<Forum />)} />
+        <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>
     </BrowserRouter>
